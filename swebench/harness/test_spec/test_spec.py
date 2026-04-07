@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 import platform
 
 from dataclasses import dataclass
@@ -11,8 +12,11 @@ from swebench.harness.constants import (
     LATEST,
     MAP_REPO_TO_EXT,
     MAP_REPO_VERSION_TO_SPECS,
+    USE_X86,
     SWEbenchInstance,
 )
+logger = logging.getLogger(__name__)
+
 from swebench.harness.dockerfiles import (
     get_dockerfile_base,
     get_dockerfile_env,
@@ -167,12 +171,16 @@ def get_test_specs_from_dataset(
     """
     if isinstance(dataset[0], TestSpec):
         return cast(list[TestSpec], dataset)
-    return list(
-        map(
-            lambda x: make_test_spec(x, namespace, instance_image_tag),
-            cast(list[SWEbenchInstance], dataset),
+    specs = [
+        make_test_spec(x, namespace, instance_image_tag)
+        for x in cast(list[SWEbenchInstance], dataset)
+    ]
+    skipped = len(dataset) - len([s for s in specs if s is not None])
+    if skipped:
+        logger.warning(
+            f"Skipped {skipped}/{len(dataset)} instances incompatible with current architecture ({platform.machine()})"
         )
-    )
+    return [s for s in specs if s is not None]
 
 
 def make_test_spec(
@@ -181,7 +189,7 @@ def make_test_spec(
     base_image_tag: str = LATEST,
     env_image_tag: str = LATEST,
     instance_image_tag: str = LATEST,
-) -> TestSpec:
+) -> Optional[TestSpec]:
     if isinstance(instance, TestSpec):
         return instance
     assert base_image_tag is not None, "base_image_tag cannot be None"
@@ -225,6 +233,12 @@ def make_test_spec(
         instance, specs, env_name, repo_directory, base_commit, test_patch
     )
     if platform.machine() in {"aarch64", "arm64"}:
+        if instance_id in USE_X86:
+            logger.warning(
+                f"Skipping {instance_id}: requires x86_64 but current machine is ARM. "
+                f"This instance depends on x86-only binaries and cannot run on ARM."
+            )
+            return None
         arch = "arm64"
     else:
         arch = "x86_64"
