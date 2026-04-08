@@ -928,8 +928,11 @@ MAP_REPO_VERSION_TO_SPECS_PY = {
 
 # Constants - Repository Specific Installation Instructions
 MAP_REPO_TO_INSTALL_PY = {
-    "12rambau/sepal_ui": "apt-get update && apt-get install -y libgdal-dev gdal-bin && export GDAL_VERSION=$(gdal-config --version)",
+    "12rambau/sepal_ui": "conda install -c conda-forge gdal -y",
 }
+
+# Repos that need extra system (apt) packages installed before pip install
+MAP_REPO_TO_APT_PKGS_PY = {}
 
 
 # Constants - Task Instance Requirements File Paths
