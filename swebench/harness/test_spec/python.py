@@ -283,6 +283,9 @@ def make_env_script_list_py(instance, specs, env_name) -> list:
     HEREDOC_DELIMITER = "EOF_59812759871"
     reqs_commands = [
         "source /opt/miniconda3/bin/activate",
+        # Configure pip to use Tsinghua mirror for faster downloads in China
+        "pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple",
+        "pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn",
     ]
     # Create conda environment according to install instructinos
     pkgs = specs.get("packages", "")
