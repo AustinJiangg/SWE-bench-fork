@@ -34,6 +34,9 @@ RUN adduser --disabled-password --gecos 'dog' nonroot
 
 _DOCKERFILE_ENV_PY = r"""FROM --platform={platform} {base_image_key}
 
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
+
 COPY ./setup_env.sh /root/
 RUN sed -i -e 's/\r$//' /root/setup_env.sh
 RUN chmod +x /root/setup_env.sh
