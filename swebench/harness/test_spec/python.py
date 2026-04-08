@@ -16,7 +16,6 @@ from swebench.harness.constants import (
     START_TEST_OUTPUT,
     END_TEST_OUTPUT,
 )
-from swebench.harness.constants.python import MAP_REPO_TO_APT_PKGS_PY
 from swebench.harness.utils import get_modified_files
 from functools import cache
 
@@ -250,12 +249,6 @@ def make_repo_script_list_py(
         f"conda activate {env_name}",
         'echo "Current environment: $CONDA_DEFAULT_ENV"',
     ]
-    # Install system-level apt packages if needed for this repo
-    if repo in MAP_REPO_TO_APT_PKGS_PY:
-        pkgs = " ".join(MAP_REPO_TO_APT_PKGS_PY[repo])
-        setup_commands.append("apt-get update")
-        setup_commands.append(f"apt-get install -y {pkgs}")
-
     if repo in MAP_REPO_TO_INSTALL:
         setup_commands.append(MAP_REPO_TO_INSTALL[repo])
 
