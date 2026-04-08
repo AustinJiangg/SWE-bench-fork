@@ -927,7 +927,9 @@ MAP_REPO_VERSION_TO_SPECS_PY = {
 }
 
 # Constants - Repository Specific Installation Instructions
-MAP_REPO_TO_INSTALL_PY = {}
+MAP_REPO_TO_INSTALL_PY = {
+    "12rambau/sepal_ui": "apt-get update && apt-get install -y libgdal-dev gdal-bin && export GDAL_VERSION=$(gdal-config --version)",
+}
 
 
 # Constants - Task Instance Requirements File Paths
