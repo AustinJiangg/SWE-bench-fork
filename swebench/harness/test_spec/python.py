@@ -286,6 +286,12 @@ def make_env_script_list_py(instance, specs, env_name) -> list:
         # Configure pip to use Tsinghua mirror for faster downloads in China
         "pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple",
         "pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn",
+        # Configure conda to use Tsinghua mirror for faster downloads in China
+        "conda config --remove channels defaults 2>/dev/null || true",
+        "conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ 2>/dev/null || true",
+        "conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ 2>/dev/null || true",
+        "conda config --set custom_channels.conda-forge https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud",
+        "conda config --set show_channel_urls yes",
     ]
     # Create conda environment according to install instructinos
     pkgs = specs.get("packages", "")
