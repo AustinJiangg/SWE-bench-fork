@@ -287,6 +287,7 @@ def make_env_script_list_py(instance, specs, env_name) -> list:
         "pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple",
         "pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn",
         # Configure conda to use Tsinghua mirror for faster downloads in China (keep defaults + conda-forge as fallback)
+        "conda config --append channels defaults 2>/dev/null || true",
         "conda config --append channels conda-forge 2>/dev/null || true",
         "conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ 2>/dev/null || true",
         "conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ 2>/dev/null || true",
