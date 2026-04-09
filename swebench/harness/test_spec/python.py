@@ -286,6 +286,8 @@ def make_env_script_list_py(instance, specs, env_name) -> list:
         # Configure pip to use Tsinghua mirror for faster downloads in China
         "pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple",
         "pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn",
+        # Clear proxy env vars that may leak from host into Docker build and break conda
+        "unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy no_proxy NO_PROXY 2>/dev/null || true",
         # Configure conda to use Tsinghua mirror for faster downloads in China (keep defaults + conda-forge as fallback)
         "conda config --append channels defaults 2>/dev/null || true",
         "conda config --append channels conda-forge 2>/dev/null || true",
