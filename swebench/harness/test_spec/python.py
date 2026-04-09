@@ -288,13 +288,13 @@ def make_env_script_list_py(instance, specs, env_name) -> list:
         "pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn",
         # Clear proxy env vars that may leak from host into Docker build and break conda
         "unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy no_proxy NO_PROXY 2>/dev/null || true",
-        # Configure conda: remove unreachable upstream channels, use Tsinghua mirrors only
-        "conda config --remove channels conda-forge 2>/dev/null || true",
-        "conda config --remove channels defaults 2>/dev/null || true",
-        "conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ 2>/dev/null || true",
-        "conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ 2>/dev/null || true",
-        "conda config --set custom_channels.conda-forge https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud",
+        # Configure conda to use Tsinghua mirror
+        "conda config --remove-key channels 2>/dev/null || true",
+        "conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main",
+        "conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r",
+        "conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge",
         "conda config --set show_channel_urls yes",
+        "conda config --set ssl_verify false",
     ]
     # Create conda environment according to install instructinos
     pkgs = specs.get("packages", "")
