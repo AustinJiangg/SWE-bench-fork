@@ -107,6 +107,13 @@ def build_image(
         build_dir (Path): Directory for the build context (will also contain logs, scripts, and artifacts)
         nocache (bool): Whether to use the cache when building
     """
+    # Re-check if image already exists (handles concurrent builds across processes)
+    try:
+        client.images.get(image_name)
+        return
+    except docker.errors.ImageNotFound:
+        pass
+
     # Create a logger for the build process
     logger = setup_logger(image_name, build_dir / "build_image.log")
     logger.info(
